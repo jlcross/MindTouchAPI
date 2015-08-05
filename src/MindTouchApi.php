@@ -10,7 +10,7 @@ class MindTouchApi {
 
 	public function __construct($config = array()) {
 		if (count($config) > 0) {
-			$this->setApiCredentials();
+			$this->setApiCredentials($config);
 		}
 		$this->edit_time = date('YmdHis');
 	}
