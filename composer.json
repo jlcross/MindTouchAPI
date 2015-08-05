@@ -1,0 +1,19 @@
+"repositories": [
+    {
+        "type": "package",
+        "package": {
+            "name": "jlcross/mindtouchapi",
+            "version": "dev-master",
+            "source": {
+                "url": "git://github.com/jlcross/MindTouchAPI.git",
+                "type": "git",
+                "reference": "master"
+            },
+            "autoload": {
+                "psr-0" : {
+                    "jlcross\\MindTouchApi" : "src"
+                }
+            }
+        }
+    }
+],
