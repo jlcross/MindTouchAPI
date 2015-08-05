@@ -1,6 +1,6 @@
 <?php
 
-namespace jlcross\MindTouchApi;
+namespace MindTouchApi;
 
 class MindTouchApi {
 	private $api_url;

@@ -1,8 +1,8 @@
 {
-    "name": "jlcross/mindtouchapi",
+    "name": "MindTouchApi",
     "autoload": {
         "psr-0" : {
-            "jlcross\\MindTouchApi" : "src"
+            "MindTouchApi" : "src"
         }
     }
 }
