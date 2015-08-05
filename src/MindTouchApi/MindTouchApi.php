@@ -730,4 +730,46 @@ class MindTouchApi {
 		return $output;
 	}
 
+	/**
+	 * Returns list of users. When user ID is supplied, only that user's
+	 * information is returned.
+	 * 
+	 * @param mixed $user_id Can be user ID or user name.
+	 * @return object XML object containing user information.
+	 */
+	public function usersGet($user_id = '') {
+		$url = 'users';
+		if (!empty($user_id)) {
+			$url .= '/';
+			if (is_string($user_id) && $user_id !== 'current') {
+				$url .= '=';
+				$user_id = urlencode(urlencode($user_id));
+			}
+			$url .= $user_id;
+		}
+		$output = $this->get($url);
+		return $this->parseOutput($output);
+	}
+
+	/**
+	 * Creates a new user.
+	 * 
+	 * @param string $username User's username.
+	 * @param string $email User's email address.
+	 * @param string $name User's full name.
+	 * @return object XML object containing new user information.
+	 */
+	public function usersPost($username, $email, $name) {
+		// Build content for the new user.
+		$content = "<user>";
+		$content .= "<username>$username</username>";
+		$content .= "<email>$email</email>";
+		$content .= "<fullname>$name</fullname>";
+		$content .= "<status>active</status>";
+		$content .= "</user>";
+
+		$output = $this->post('users', $content);
+		return $this->parseOutput($output);
+	}
+
 }
