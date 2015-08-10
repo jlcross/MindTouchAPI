@@ -69,6 +69,10 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				'Content-Type: application/xml'
+			)
+		);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
 		$output = curl_exec($ch);
 		curl_close($ch);
@@ -93,7 +97,7 @@ class MindTouchApi {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-		curl_setopt ($ch, CURLOPT_HTTPHEADER, array(
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 				'Content-Type: application/xml',
 				'Content-Length: ' . strlen($content)
 			)
