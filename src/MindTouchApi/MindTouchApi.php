@@ -303,7 +303,7 @@ class MindTouchApi {
 		}
 
 		// Get output from API.
-		$output = $this->post($url, $content);
+		$output = $this->post($url, $content, 'text/plain');
 
 		// Parse the output.
 		$output = $this->parseOutput($output);
