@@ -57,10 +57,20 @@ class MindTouchApi {
 	 * Executes POST call to API.
 	 * @param string $url URL of the API to call.
 	 * @param string $content Content to send to the API method.
+	 * @param string $type Content type of the content. Defaults to application/xml.
+	 * @param string $header Optional header that can be sent.
 	 * @return string $output XML response to the API call.
 	 */
-	private function post($url, $content) {
+	private function post($url, $content, $type = 'application/xml', $header = '') {
 		$url = $this->api_url . $url;
+
+		// Set headers.
+		$headers = array(
+			'Content-Type: ' . $type
+		);
+		if (!empty($header)) {
+			$headers[] = $header;
+		}
 
 		// Open curl.
 		$ch = curl_init();
@@ -69,10 +79,7 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				'Content-Type: application/xml'
-			)
-		);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
 		$output = curl_exec($ch);
 		curl_close($ch);
@@ -498,6 +505,46 @@ class MindTouchApi {
 		// Parse the output.
 		$output = $this->parseOutput($output);
 		return $output;
+	}
+
+	/**
+	 * Retrieves a page's properties.
+	 * 
+	 * @param mixed $page_id MindTouch page ID.
+	 * @param string $property Optional. When set, retrieves that property.
+	 * @return mixed XML object when XML. String otherwise.
+	 */
+	public function pagePropertiesGet($page_id, $property = '') {
+		// Build the MindTouch API URL to get a page's properties.
+		$url = $this->buildPageApiUrl($page_id) . "/properties";
+		if (!empty($property)) {
+			$url .= '/' . $property;
+		}
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		if (empty($property)) {
+			$output = $this->parseOutput($output);
+		}
+		return $output;
+	}
+
+	/**
+	 * Adds a property to a page.
+	 * 
+	 * @param mixed $page_id MindTouch page ID.
+	 * @param string $property Name of property to add.
+	 * @param string $description Description of property.
+	 * @param string $content Content of property.
+	 * @return object XML object of page's properties.
+	 */
+	public function pagePropertiesPost($page_id, $property, $description, $content) {
+		$url = $this->buildPageApiUrl($page_id) . "/properties";
+		$header = "Slug: $property";
+		$output = $this->post($url . '?abort=never&description=' . $description, $content, 'text/plain', $header);
+		return $this->parseOutput($output);
 	}
 
 	/**
