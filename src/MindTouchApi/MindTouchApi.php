@@ -57,17 +57,18 @@ class MindTouchApi {
 	 * Executes POST call to API.
 	 * @param string $url URL of the API to call.
 	 * @param string $content Content to send to the API method.
-	 * @param string $type Content type of the content. Defaults to application/xml.
+	 * @param string $type Content type of the content.
 	 * @param string $header Optional header that can be sent.
 	 * @return string $output XML response to the API call.
 	 */
-	private function post($url, $content, $type = 'application/xml', $header = '') {
+	private function post($url, $content, $type = '', $header = '') {
 		$url = $this->api_url . $url;
 
 		// Set headers.
-		$headers = array(
-			'Content-Type: ' . $type
-		);
+		$headers = array();
+		if (!empty($type)) {
+			$headers[] = 'Content-Type: ' . $type;
+		}
 		if (!empty($header)) {
 			$headers[] = $header;
 		}
@@ -79,7 +80,9 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		if (count($headers) > 0) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		}
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
 		$output = curl_exec($ch);
 		curl_close($ch);
@@ -303,7 +306,7 @@ class MindTouchApi {
 		}
 
 		// Get output from API.
-		$output = $this->post($url, $content, 'text/plain');
+		$output = $this->post($url, $content);
 
 		// Parse the output.
 		$output = $this->parseOutput($output);
@@ -820,7 +823,7 @@ class MindTouchApi {
 		$content .= "<status>active</status>";
 		$content .= "</user>";
 
-		$output = $this->post('users?accountpassword=' . $password, $content);
+		$output = $this->post('users?accountpassword=' . $password, $content, 'application/xml');
 		return $this->parseOutput($output);
 	}
 
