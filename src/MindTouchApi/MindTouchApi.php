@@ -809,12 +809,12 @@ class MindTouchApi {
 	 * Creates a new user.
 	 * 
 	 * @param string $username User's username.
-	 * @param string $password User's password.
 	 * @param string $email User's email address.
 	 * @param string $name User's full name.
+	 * @param string $password User's password.
 	 * @return object XML object containing new user information.
 	 */
-	public function usersPost($username, $password, $email, $name) {
+	public function usersPost($username, $email, $name, $password = '') {
 		// Build content for the new user.
 		$content = "<user>";
 		$content .= "<username>$username</username>";
@@ -823,7 +823,11 @@ class MindTouchApi {
 		$content .= "<status>active</status>";
 		$content .= "</user>";
 
-		$output = $this->post('users?accountpassword=' . $password, $content, 'application/xml');
+		$url = 'users';
+		if (!empty($password)) {
+			$url .= '?accountpassword=' . $password;
+		}
+		$output = $this->post($url, $content, 'application/xml');
 		return $this->parseOutput($output);
 	}
 
