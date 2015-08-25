@@ -176,20 +176,6 @@ class MindTouchApi {
 	}
 
 	/**
-	 * Builds the pages API URL. Supports both string and integer page IDs.
-	 * @param mixed $page_id String or integer.
-	 * @return string $url URL for the pages API methods.
-	 */
-	private function buildPageApiUrl($page_id) {
-		$url = "pages/";
-		if (is_string($page_id)) {
-			$url .= '=';
-		}
-		$url .= $page_id;
-		return $url;
-	}
-
-	/**
 	 * Returns all context ID mappings for the site. When ID is provided, only that
 	 * ID is returned.
 	 * @param string $context_id MindTouch context ID.
@@ -381,6 +367,21 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Builds the pages API URL. Supports both string and integer page IDs.
+	 * 
+	 * @param mixed $page_id String or integer.
+	 * @return string $url URL for the pages API methods.
+	 */
+	private function pageUrl($page_id) {
+		$url = "pages/";
+		if (is_string($page_id)) {
+			$url .= '=';
+		}
+		$url .= $page_id;
+		return $url;
+	}
+
+	/**
 	 * Creates the given page.
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @param string $content Content of the page.
@@ -389,7 +390,7 @@ class MindTouchApi {
 	 */
 	public function pageCreate($page_id, $content, $title = '') {
 		// Build the MindTouch API URL to create or update a page's content.
-		$url = $this->buildPageApiUrl($page_id) . "/contents?edittime=" . $this->edit_time . "&overwrite=true";
+		$url = $this->pageUrl($page_id) . "/contents?edittime=" . $this->edit_time . "&overwrite=true";
 
 		// Deal with title when provided.
 		if (!empty($title)) {
@@ -431,7 +432,7 @@ class MindTouchApi {
 	 */
 	public function pageContentsGet($page_id, $options = array()) {
 		// Build the MindTouch API URL to get a page's contents.
-		$url = $this->buildPageApiUrl($page_id) . "/contents?" . http_build_query($options);
+		$url = $this->pageUrl($page_id) . "/contents?" . http_build_query($options);
 
 		// Get output from API.
 		$output = $this->get($url);
@@ -448,7 +449,7 @@ class MindTouchApi {
 	 */
 	public function pageDelete($page_id) {
 		// Build the MindTouch API URL to delete the page.
-		$url = $this->buildPageApiUrl($page_id);
+		$url = $this->pageUrl($page_id);
 
 		// Get output from API.
 		$output = $this->delete($url);
@@ -465,7 +466,7 @@ class MindTouchApi {
 	 */
 	public function pageExists($page_id) {
 		// Build the MindTouch API URL to check a page's existence.
-		$url = $this->buildPageApiUrl($page_id);
+		$url = $this->pageUrl($page_id);
 
 		// Get output from API.
 		$output = $this->get($url);
@@ -481,7 +482,7 @@ class MindTouchApi {
 
 	public function pageGet($page_id) {
 		// Build the MindTouch API URL to fetch the subpages.
-		$url = $this->buildPageApiUrl($page_id);
+		$url = $this->pageUrl($page_id);
 
 		// Get output from API.
 		$output = $this->get($url);
@@ -502,7 +503,7 @@ class MindTouchApi {
 		if (strpos($file_name, '.') === false) {
 			$file_name = '=' . $file_name;
 		}
-		$url = $this->buildPageApiUrl($page_id) . "/files/" . $file_name;
+		$url = $this->pageUrl($page_id) . "/files/" . $file_name;
 
 		// Get output from API.
 		$output = $this->get($url);
@@ -527,7 +528,7 @@ class MindTouchApi {
 		if (strpos($file_name, '.') === false) {
 			$file_name = '=' . $file_name;
 		}
-		$url = $this->buildPageApiUrl($page_id) . "/files/" . rawurlencode($file_name);
+		$url = $this->pageUrl($page_id) . "/files/" . rawurlencode($file_name);
 		$url = $this->api_url . $url;
 
 		// Get the mime type.
@@ -568,7 +569,7 @@ class MindTouchApi {
 	 */
 	public function pageFilesGet($page_id) {
 		// Build the MindTouch API URL to get a page's files.
-		$url = $this->buildPageApiUrl($page_id) . "/files";
+		$url = $this->pageUrl($page_id) . "/files";
 		$url = "pages/=" . $page_id . "/files";
 
 		// Get output from API.
@@ -588,7 +589,7 @@ class MindTouchApi {
 	 */
 	public function pageOrderPut($page_id, $after_id) {
 		// Build the MindTouch API URL to get a page's tags.
-		$url = $this->buildPageApiUrl($page_id) . "/order";
+		$url = $this->pageUrl($page_id) . "/order";
 
 		// Add the ID to place the page after.
 		$url .= '?afterid=' . $after_id;
@@ -610,7 +611,7 @@ class MindTouchApi {
 	 */
 	public function pagePropertiesGet($page_id, $property = '') {
 		// Build the MindTouch API URL to get a page's properties.
-		$url = $this->buildPageApiUrl($page_id) . "/properties";
+		$url = $this->pageUrl($page_id) . "/properties";
 		if (!empty($property)) {
 			$url .= '/' . $property;
 		}
@@ -635,7 +636,7 @@ class MindTouchApi {
 	 * @return object XML object of page's properties.
 	 */
 	public function pagePropertiesPost($page_id, $property, $description, $content) {
-		$url = $this->buildPageApiUrl($page_id) . "/properties";
+		$url = $this->pageUrl($page_id) . "/properties";
 		$header = "Slug: $property";
 		$output = $this->post($url . '?abort=never&description=' . $description, $content, 'text/plain', $header);
 		return $this->parseOutput($output);
@@ -648,7 +649,7 @@ class MindTouchApi {
 	 */
 	public function pageSecurityDelete($page_id) {
 		// Build the MindTouch API URL to delete a page's security.
-		$url = $this->buildPageApiUrl($page_id) . "/security";
+		$url = $this->pageUrl($page_id) . "/security";
 		
 		// Get output from API.
 		$output = $this->delete($url);
@@ -663,7 +664,7 @@ class MindTouchApi {
 	 */
 	public function pageSecurityGet($page_id) {
 		// Build the MindTouch API URL to get a page's security.
-		$url = $this->buildPageApiUrl($page_id) . "/security";
+		$url = $this->pageUrl($page_id) . "/security";
 		
 		// Get output from API.
 		$output = $this->get($url);
@@ -682,7 +683,7 @@ class MindTouchApi {
 	 */
 	public function pageSecurityPut($page_id, $restriction, $children = 'none') {
 		// Build the MindTouch API URL to set a page's security.
-		$url = $this->buildPageApiUrl($page_id) . "/security?cascade=" . $children;
+		$url = $this->pageUrl($page_id) . "/security?cascade=" . $children;
 
 		// Deal with the security.
 		$content = "<security>";
@@ -706,7 +707,7 @@ class MindTouchApi {
 	 */
 	public function pageTagsGet($page_id) {
 		// Build the MindTouch API URL to get a page's tags.
-		$url = $this->buildPageApiUrl($page_id) . "/tags";
+		$url = $this->pageUrl($page_id) . "/tags";
 
 		// Get output from API.
 		$output = $this->get($url);
@@ -724,7 +725,7 @@ class MindTouchApi {
 	 */
 	public function pageTagsSet($page_id, $tags) {
 		// Build the MindTouch API URL to update the page's tags.
-		$url = $this->buildPageApiUrl($page_id) . "/tags";
+		$url = $this->pageUrl($page_id) . "/tags";
 
 		$xml_escape = array(
 			'"' => '&quot;',
@@ -774,7 +775,7 @@ class MindTouchApi {
 	 */
 	public function pagesSubpagesGet($page_id) {
 		// Build the MindTouch API URL to fetch the subpages.
-		$url = $this->buildPageApiUrl($page_id) . "/subpages";
+		$url = $this->pageUrl($page_id) . "/subpages";
 
 		// Get output from API.
 		$output = $this->get($url);
@@ -876,14 +877,13 @@ class MindTouchApi {
 	}
 
 	/**
-	 * Returns list of users. When user ID is supplied, only that user's
-	 * information is returned.
+	 * Builds the users API URL. Supports both string and integer user IDs.
 	 * 
 	 * @param mixed $user_id Can be user ID or user name.
-	 * @return object XML object containing user information.
+	 * @return string $url URL for the users API methods.
 	 */
-	public function usersGet($user_id = '') {
-		$url = 'users';
+	private function usersUrl($user_id) {
+		$url = "users";
 		if (!empty($user_id)) {
 			$url .= '/';
 			if (is_string($user_id) && $user_id !== 'current') {
@@ -892,6 +892,18 @@ class MindTouchApi {
 			}
 			$url .= $user_id;
 		}
+		return $url;
+	}
+
+	/**
+	 * Returns list of users. When user ID is supplied, only that user's
+	 * information is returned.
+	 * 
+	 * @param mixed $user_id Can be user ID or user name.
+	 * @return object XML object containing user information.
+	 */
+	public function usersGet($user_id = '') {
+		$url = $this->usersUrl($user_id);
 		$output = $this->get($url);
 		return $this->parseOutput($output);
 	}
@@ -920,11 +932,51 @@ class MindTouchApi {
 		$content .= "<status>active</status>";
 		$content .= "</user>";
 
-		$url = 'users';
+		$url = $this->usersUrl();
 		if (!empty($password)) {
 			$url .= '?accountpassword=' . $password;
 		}
 		$output = $this->post($url, $content, 'application/xml');
+		return $this->parseOutput($output);
+	}
+
+	/**
+	 * Retrieves a user's properties.
+	 * 
+	 * @param mixed $user_id MindTouch user ID.
+	 * @param string $property Optional. When set, retrieves that property.
+	 * @return mixed XML object when XML. String otherwise.
+	 */
+	public function usersPropertiesGet($user_id, $property = '') {
+		$url = $this->usersUrl($user_id) . '/properties';
+		if (!empty($property)) {
+			$url .= '/' . $property;
+		}
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		if (empty($property)) {
+			$output = $this->parseOutput($output);
+		}
+		return $output;
+	}
+
+	/**
+	 * Adds a property to a user.
+	 * 
+	 * @param mixed $user_id MindTouch user ID.
+	 * @param string $property Name of property to add.
+	 * @param string $description Description of property.
+	 * @param string $content Content of property.
+	 * @return object XML object of user's properties.
+	 */
+	public function usersPropertiesPost($user_id, $property, $description, $content) {
+		$url = $this->usersUrl($user_id) . '/properties';
+
+		$header = "Slug: $property";
+		$output = $this->post($url . '?abort=never&description=' . $description, $content, 'text/plain', $header);
 		return $this->parseOutput($output);
 	}
 
