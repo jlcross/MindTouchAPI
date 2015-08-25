@@ -882,7 +882,7 @@ class MindTouchApi {
 	 * @param mixed $user_id Can be user ID or user name.
 	 * @return string $url URL for the users API methods.
 	 */
-	private function usersUrl($user_id) {
+	private function usersUrl($user_id = '') {
 		$url = "users";
 		if (!empty($user_id)) {
 			$url .= '/';
