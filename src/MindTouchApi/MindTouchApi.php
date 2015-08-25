@@ -290,6 +290,97 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Returns list of groups. When group ID is supplied, only that group's
+	 * information is returned.
+	 * 
+	 * @param mixed $group_id Can be group ID or group name.
+	 * @return object XML object containing user information.
+	 */
+	public function groupsGet($group_id = '') {
+		$url = 'groups';
+		if (!empty($group_id)) {
+			$url .= '/';
+			if (is_string($group_id)) {
+				$url .= '=';
+				$group_id = urlencode(urlencode($group_id));
+			}
+			$url .= $group_id;
+		}
+		$output = $this->get($url);
+		return $this->parseOutput($output);
+	}
+
+	/**
+	 * Creates or updates a new group.
+	 * 
+	 * @param string $name Group name.
+	 * @param integer $group_id MindTouch group ID.
+	 * @return object XML object containing group information.
+	 */
+	public function groupsPost($name, $group_id = '') {
+		// Build content for the group.
+		$content = "<group";
+		if (!empty($group_id)) {
+			$content .= '  id="' . $group_id . '"';
+		}
+		$content .= ">";
+		$content .= "<name>$name</name>";
+		$content .= "</group>";
+
+		$url = 'groups';
+		$output = $this->post($url, $content, 'application/xml');
+		return $this->parseOutput($output);
+	}
+
+	/**
+	 * Returns list of users in the group.
+	 * 
+	 * @param mixed $group_id Can be group ID or group name.
+	 * @return object XML object containing user information.
+	 */
+	public function groupsUsersGet($group_id) {
+		$url = 'groups';
+		if (!empty($group_id)) {
+			$url .= '/';
+			if (is_string($group_id)) {
+				$url .= '=';
+				$group_id = urlencode(urlencode($group_id));
+			}
+			$url .= $group_id . '/users';
+		}
+		$output = $this->get($url);
+		return $this->parseOutput($output);
+	}
+
+	/**
+	 * Adds users to a group.
+	 * 
+	 * @param mixed $group_id Can be group ID or group name.
+	 * @param array $users Array of user MindTouch IDs (integers) to add.
+	 * @return object XML object containing group information.
+	 */
+	public function groupsUsersPost($group_id, $users = array()) {
+		// Build content for the group.
+		$content = "<users>";
+		foreach ($users as $user) {
+			$content .= '<user id="' . $user . '"/>';
+		}
+		$content .= "</users>";
+
+		$url = 'groups';
+		if (!empty($group_id)) {
+			$url .= '/';
+			if (is_string($group_id)) {
+				$url .= '=';
+				$group_id = urlencode(urlencode($group_id));
+			}
+			$url .= $group_id . '/users';
+		}
+		$output = $this->post($url, $content, 'application/xml');
+		return $this->parseOutput($output);
+	}
+
+	/**
 	 * Creates the given page.
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @param string $content Content of the page.
