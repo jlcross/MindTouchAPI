@@ -806,17 +806,23 @@ class MindTouchApi {
 	}
 
 	/**
-	 * Creates a new user.
+	 * Creates or updates a new user.
 	 * 
 	 * @param string $username User's username.
 	 * @param string $email User's email address.
 	 * @param string $name User's full name.
 	 * @param string $password User's password.
-	 * @return object XML object containing new user information.
+	 * @param integer $id MindTouch user ID.
+	 * @return object XML object containing user information.
 	 */
-	public function usersPost($username, $email, $name, $password = '') {
-		// Build content for the new user.
-		$content = "<user>";
+	public function usersPost($username, $email, $name, $password = '', $id = '') {
+		// Build content for the user.
+		// Include MindTouch user ID when updating a user.
+		$content = "<user";
+		if (!empty($id)) {
+			$content .= '  id="' . $id . '"';
+		}
+		$content .= ">";
 		$content .= "<username>$username</username>";
 		$content .= "<email>$email</email>";
 		$content .= "<fullname>$name</fullname>";
