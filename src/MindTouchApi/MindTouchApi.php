@@ -896,6 +896,35 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Builds a link that logs in the given user.
+	 * 
+	 * @param string $api_key MindTouch API key.
+	 * @param string $username Username of MindTouch user.
+	 * @param string $redirect URL to send user to after logging in.
+	 * @return string Authentication link.
+	 */
+	public function usersAuthenticateLink($api_key, $username, $redirect = '') {
+		// Set the redirect to the main MindTouch page when empty.
+		if (empty($redirect)) {
+			$redirect = str_replace('@api/deki/', '', $this->api_url);
+		}
+
+		// Create the MD5 authhash.
+		$timestamp = time();
+		$auth_hash = md5("{$username}:{$timestamp}:{$api_key}");
+
+		// Create the token.
+		$imp_auth_token = "imp_{$timestamp}_{$auth_hash}_={$username}";
+
+		// Depending on your HTTP client, you may or may not need to 
+		// URL encode the token.
+		$imp_auth_token = urlencode($imp_auth_token);
+
+		// Build link and return it.
+		return $this->api_url . "users/authenticate?authtoken=" . $imp_auth_token . "&redirect=" . $redirect;
+	}
+
+	/**
 	 * Returns list of users. When user ID is supplied, only that user's
 	 * information is returned.
 	 * 
