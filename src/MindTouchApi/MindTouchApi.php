@@ -222,6 +222,27 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Deletes the given context ID.
+	 * 
+	 * @param string $context_id MindTouch context ID.
+	 * @return string $output XML output of API response.
+	 */
+	public function contextsDelete($context_id) {
+		// Build the MindTouch API URL to get the contexts.
+		$url = "contexts";
+		if (!empty($context_id)) {
+			$url .= '/' . $context_id;
+		}
+
+		// Get output from API.
+		$output = $this->delete($url);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
+	/**
 	 * Returns all context IDs for the site. When ID is provided, only that
 	 * ID is returned.
 	 * @param string $context_id MindTouch context ID.
