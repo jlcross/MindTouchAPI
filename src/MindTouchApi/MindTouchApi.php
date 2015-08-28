@@ -237,8 +237,6 @@ class MindTouchApi {
 		// Get output from API.
 		$output = $this->delete($url);
 
-		// Parse the output.
-		$output = $this->parseOutput($output);
 		return $output;
 	}
 
