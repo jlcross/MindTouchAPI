@@ -948,10 +948,19 @@ class MindTouchApi {
 	 * information is returned.
 	 * 
 	 * @param mixed $user_id Can be user ID or user name.
+	 * @param array $filters Filters to search by.
 	 * @return object XML object containing user information.
 	 */
-	public function usersGet($user_id = '') {
+	public function usersGet($user_id = '', $filters = array()) {
 		$url = $this->usersUrl($user_id);
+
+		if (count($filters) > 0) {
+			$url .= '?';
+			foreach ($filters as $filter => $value) {
+				$url .= $filter . '=' . $value . '&';
+			}
+		}
+
 		$output = $this->get($url);
 		return $this->parseOutput($output);
 	}
