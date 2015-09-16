@@ -93,9 +93,10 @@ class MindTouchApi {
 	 * Executes PUT call to API.
 	 * @param string $url URL of the API to call.
 	 * @param string $content Content to send to the API method.
+	 * @param string $type Content type of the content.
 	 * @return string $output XML response to the API call.
 	 */
-	private function put($url, $content = '') {
+	private function put($url, $content = '', $type = 'application/xml') {
 		$url = $this->api_url . $url;
 
 		// PUT in PHP requires content to be in a file. Store in temp.
@@ -108,7 +109,7 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				'Content-Type: application/xml',
+				'Content-Type: ' . $type,
 				'Content-Length: ' . strlen($content)
 			)
 		);
@@ -966,6 +967,19 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Set password for the given user.
+	 * 
+	 * @param mixed $user_id Can be user ID or user name.
+	 * @param string $password User's password.
+	 * @return string
+	 */
+	public function usersPasswordPut($user_id, $password) {
+		$url = $this->usersUrl($user_id) . '/password';
+		$output = $this->put($url, $password, 'text/plain');
+		return $output;
+	}
+
+	/**
 	 * Creates or updates a new user.
 	 * 
 	 * @param string $username User's username.
@@ -990,10 +1004,38 @@ class MindTouchApi {
 		$content .= "</user>";
 
 		$url = $this->usersUrl();
-		if (!empty($password)) {
+		if (empty($id) && !empty($password)) {
 			$url .= '?accountpassword=' . $password;
 		}
 		$output = $this->post($url, $content, 'application/xml');
+
+		if (!empty($id) && !empty($password)) {
+			$this->usersPasswordPut($id, $password);
+		}
+
+		return $this->parseOutput($output);
+	}
+
+	/**
+	 * Modifies an existing user.
+	 * 
+	 * @param mixed $user_id Can be user ID or user name.
+	 * @param string $username User's username.
+	 * @param string $email User's email address.
+	 * @param string $name User's full name.
+	 * @param string $status Set to active or inactive.
+	 * @return object XML object containing user information.
+	 */
+	public function usersPut($user_id, $username, $email, $name, $status = 'active') {
+		$content = "<user>";
+		$content .= "<username>$username</username>";
+		$content .= "<email>$email</email>";
+		$content .= "<fullname>$name</fullname>";
+		$content .= "<status>$status</status>";
+		$content .= "</user>";
+
+		$url = $this->usersUrl($user_id);
+		$output = $this->put($url, $content);
 		return $this->parseOutput($output);
 	}
 
