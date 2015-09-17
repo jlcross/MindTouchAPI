@@ -832,13 +832,9 @@ class MindTouchApi {
 	 * @param string $api_password MindTouch API password.
 	 */
 	public function setApiCredentials($credentials) {
-		$this->api_url = (!empty($credentials['api_domain'])) ? $credentials['api_domain'] : '';
 		$secure = (isset($credentials['secure'])) ? $credentials['secure'] : true;
-		// Add the required bits when the api_url is just a domain.
-		if (!empty($this->api_url) && stripos($this->api_url, '@api/deki/') === false) {
-			$this->api_url = $secure ? 'https://' : 'http://';
-			$this->api_url .= $this->api_url . '/@api/deki/';
-		}
+		$this->api_url = $secure ? 'https://' : 'http://';
+		$this->api_url .= $credentials['api_domain'] . '/@api/deki/';
 
 		$this->api_username = (!empty($credentials['api_username'])) ? $credentials['api_username'] : '';
 		$this->api_password = (!empty($credentials['api_password'])) ? $credentials['api_password'] : '';
