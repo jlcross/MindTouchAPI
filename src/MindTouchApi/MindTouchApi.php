@@ -96,8 +96,18 @@ class MindTouchApi {
 	 * @param string $type Content type of the content.
 	 * @return string $output XML response to the API call.
 	 */
-	private function put($url, $content = '', $type = 'application/xml') {
+	private function put($url, $content = '', $type = 'application/xml', $header = '') {
 		$url = $this->api_url . $url;
+
+		// Set headers.
+		$headers = array();
+		if (!empty($type)) {
+			$headers[] = 'Content-Type: ' . $type;
+		}
+		$headers[] = 'Content-Length: ' . strlen($content);
+		if (!empty($header)) {
+			$headers[] = $header;
+		}
 
 		// PUT in PHP requires content to be in a file. Store in temp.
 		$fp = fopen("php://temp", "r+");
@@ -108,11 +118,9 @@ class MindTouchApi {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				'Content-Type: ' . $type,
-				'Content-Length: ' . strlen($content)
-			)
-		);
+		if (count($headers) > 0) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		}
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
@@ -747,12 +755,13 @@ class MindTouchApi {
 		// Build the MindTouch API URL to update the page's tags.
 		$url = $this->pageUrl($page_id) . "/tags";
 
+		// Make sure &amp; replacement comes before the others.
 		$xml_escape = array(
+			'&' => '&amp;',
 			'"' => '&quot;',
 			"'" => '&apos;',
 			'<' => '&lt;',
 			'>' => '&gt;',
-			'&' => '&amp;'
 		);
 
 		// Deal with the tags.
@@ -764,7 +773,7 @@ class MindTouchApi {
 		$content .= "</tags>";
 
 		// Get output from API.
-		$output = $this->put($url, $content);
+		$output = $this->put($url, $content, 'application/xml; charset=utf-8');
 
 		// Parse the output.
 		$output = $this->parseOutput($output);
