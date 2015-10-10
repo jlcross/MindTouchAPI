@@ -568,20 +568,22 @@ class MindTouchApi {
 		// Get the mime type.
 		$file = escapeshellarg($file_info['dirname'] . '/' . $file_name);
 		$mime_type = shell_exec("file -bi " . $file);
-		if (strpos($mime_type, ';') !== false) {
-			$mime_type = substr($mime_type, 0, strpos($mime_type, ';'));
+		$headers = array();
+		if (strpos($mime_type, 'ERROR') === false) {
+			if (strpos($mime_type, ';') !== false) {
+				$mime_type = substr($mime_type, 0, strpos($mime_type, ';'));
+			}
+			$headers[] = 'Content-Type: ' . $mime_type;
 		}
 
 		// Open curl.
 		$ch = curl_init();
 		$fp = fopen($file_info['dirname'] . '/' . $file_name, "r+");
-		curl_setopt ($ch, CURLOPT_HTTPHEADER, array(
-				'Content-Type: ' . $mime_type,
-				'Content-Length: ' . $file_size,
-			)
-		);
+		if (count($headers) > 0) {
+			curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
+		}
 		curl_setopt($ch, CURLOPT_INFILE, $fp);
-		curl_setopt($ch, CURLOPT_INFILESIZE, filesize($file_info['dirname'] . '/' . $file_name));
+		curl_setopt($ch, CURLOPT_INFILESIZE, $file_size);
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_PUT, true);
 		curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
