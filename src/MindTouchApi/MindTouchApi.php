@@ -552,7 +552,7 @@ class MindTouchApi {
 	public function pageFilePut($page_id, $file_name, $description = '') {
 		// Get information about the file.
 		$file_info = pathinfo($file_name);
-		$file_size = filesize($file_name)
+		$file_size = filesize($file_name);
 
 		// Build the MindTouch API URL to attach the file to the page.
 		$file_name = $file_info['basename'];
