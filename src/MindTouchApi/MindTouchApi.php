@@ -543,11 +543,13 @@ class MindTouchApi {
 
 	/**
 	 * Attaches a file to the given MindTouch page.
+	 * 
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @param string $file_name The path and name of the file to attach.
+	 * @param string $description Description of the file.
 	 * @return object $output XML object containing API response.
 	 */
-	public function pageFilePut($page_id, $file_name) {
+	public function pageFilePut($page_id, $file_name, $description = '') {
 		// Get information about the file.
 		$file_info = pathinfo($file_name);
 
@@ -557,6 +559,9 @@ class MindTouchApi {
 			$file_name = '=' . $file_name;
 		}
 		$url = $this->pageUrl($page_id) . "/files/" . rawurlencode($file_name);
+		if (!empty($description)) {
+			$url .= '?description=' . $description;
+		}
 		$url = $this->api_url . $url;
 
 		// Get the mime type.
