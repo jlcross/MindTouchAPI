@@ -547,19 +547,25 @@ class MindTouchApi {
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @param string $file_name The path and name of the file to attach.
 	 * @param string $description Description of the file.
+	 * @param string $file_name_alt Name to use when uploading file to MindTouch.
 	 * @return object $output XML object containing API response.
 	 */
-	public function pageFilePut($page_id, $file_name, $description = '') {
+	public function pageFilePut($page_id, $file_name, $description = '', $file_name_alt = '') {
 		// Get information about the file.
 		$file_info = pathinfo($file_name);
 		$file_size = filesize($file_name);
+		$file_name = $file_info['basename'];
 
 		// Build the MindTouch API URL to attach the file to the page.
-		$file_name = $file_info['basename'];
-		if (strpos($file_name, '.') === false) {
-			$file_name = '=' . $file_name;
+		if (!empty($file_name_alt)) {
+			$mt_file_name = $file_name_alt;
+		} else {
+			$mt_file_name = $file_name;
 		}
-		$url = $this->pageUrl($page_id) . "/files/" . rawurlencode($file_name);
+		if (strpos($mt_file_name, '.') === false) {
+			$mt_file_name = '=' . $mt_file_name;
+		}
+		$url = $this->pageUrl($page_id) . "/files/" . rawurlencode($mt_file_name);
 		if (!empty($description)) {
 			$url .= '?description=' . $description;
 		}
