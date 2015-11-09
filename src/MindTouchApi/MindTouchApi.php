@@ -27,6 +27,7 @@ class MindTouchApi {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		$output = curl_exec($ch);
@@ -391,6 +392,29 @@ class MindTouchApi {
 			$url .= $group_id . '/users';
 		}
 		$output = $this->post($url, $content, 'application/xml');
+		return $this->parseOutput($output);
+	}
+
+	/**
+	 * Removes user from a group.
+	 * 
+	 * @param mixed $group_id Can be group ID or group name.
+	 * @param mixed $user_id Can be user ID or user name.
+	 * @return object XML object.
+	 */
+	public function groupsUsersDelete($group_id, $user_id) {
+		$url = 'groups/';
+		if (is_string($group_id)) {
+			$url .= '=';
+			$group_id = urlencode(urlencode($group_id));
+		}
+		$url .= $group_id . '/users/';
+		if (is_string($user_id)) {
+			$url .= '=';
+			$user_id = urlencode(urlencode($user_id));
+		}
+		$url .= $user_id;
+		$output = $this->delete($url);
 		return $this->parseOutput($output);
 	}
 
