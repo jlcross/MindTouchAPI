@@ -295,6 +295,57 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Builds the drafts API URL. Supports both string and integer page IDs.
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @return string $url URL for the drafts API methods.
+	 */
+	private function draftsUrl($page_id = '') {
+		$url = "drafts";
+		if (!empty($page_id)) {
+			$url .= '/';
+			if (is_string($page_id)) {
+				$url .= '=';
+				$page_id = urlencode(urlencode($page_id));
+			}
+			$url .= $page_id;
+		}
+		return $url;
+	}
+
+	/**
+	 * Retrieves a draft page's contents.
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @return object $output XML object.
+	 */
+	public function draftsContentsGet($page_id, $options = array()) {
+		// Build the MindTouch API URL to get a page's contents.
+		$url = $this->draftsUrl($page_id) . "/contents?" . http_build_query($options);
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
+	/**
+	 * Returns information on the draft. When $page_id is empty, returns
+	 * a list of all pages with drafts.
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @return object XML object draft information.
+	 */
+	public function draftsGet($page_id = '') {
+		$url = $this->draftsUrl($page_id);
+
+		$output = $this->get($url);
+		return $this->parseOutput($output);
+	}
+
+	/**
 	 * Escapes slashes in the MindTouch page ID.
 	 * @param string $page_id MindTouch page ID.
 	 * @return string $page_id MindTouch page ID.
