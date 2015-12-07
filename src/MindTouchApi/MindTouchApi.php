@@ -904,6 +904,18 @@ class MindTouchApi {
 		return $output;
 	}
 
+	public function pagesTreeGet($page_id) {
+		// Build the MindTouch API URL to fetch a tree from the given page.
+		$url = $this->pageUrl($page_id) . "/tree";
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
 	/**
 	 * Retrieves the error message from the API error XML.
 	 * @param string $error_xml MindTouch API error XML string.
