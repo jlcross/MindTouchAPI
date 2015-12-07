@@ -870,6 +870,18 @@ class MindTouchApi {
 		return $output;
 	}
 
+	public function pageTreeGet($page_id, $options = array()) {
+		// Build the MindTouch API URL to fetch a tree from the given page.
+		$url = $this->pageUrl($page_id) . "/tree?" . http_build_query($options);
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
 	/**
 	 * Returns a list of all the pages on the MindTouch instance.
 	 * @return string $output XML output of pages API call.
@@ -895,18 +907,6 @@ class MindTouchApi {
 	public function pagesSubpagesGet($page_id) {
 		// Build the MindTouch API URL to fetch the subpages.
 		$url = $this->pageUrl($page_id) . "/subpages";
-
-		// Get output from API.
-		$output = $this->get($url);
-
-		// Parse the output.
-		$output = $this->parseOutput($output);
-		return $output;
-	}
-
-	public function pagesTreeGet($page_id) {
-		// Build the MindTouch API URL to fetch a tree from the given page.
-		$url = $this->pageUrl($page_id) . "/tree";
 
 		// Get output from API.
 		$output = $this->get($url);
