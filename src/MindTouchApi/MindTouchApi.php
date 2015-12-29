@@ -314,6 +314,42 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Activates draft on existing page, copies content, attachments
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @return string $output XML output of the API call.
+	 */
+	public function draftsActivate($page_id) {
+		// Build the MindTouch API URL to activate a draft.
+		$url = $this->draftsUrl($page_id) . "/activate";
+
+		// Get output from API.
+		$output = $this->post($url);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
+	/**
+	 * Deactivates draft on existing page
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @return string $output XML output of the API call.
+	 */
+	public function draftsDeactivate($page_id) {
+		// Build the MindTouch API URL to deactivate a draft.
+		$url = $this->draftsUrl($page_id) . "/deactivate";
+
+		// Get output from API.
+		$output = $this->post($url);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
+	/**
 	 * Retrieves a draft page's contents.
 	 * 
 	 * @param mixed $page_id The MindTouch page ID.
@@ -332,6 +368,49 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Update draft contents of a page.
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @param string $content Content of the draft.
+	 * @param string $title Title of draft to use when different from page ID.
+	 * @return string $output XML output of draft update API call.
+	 */
+	public function draftsContentsPost($page_id, $content, $title = '') {
+		// Build the MindTouch API URL to update a draft's content.
+		$url = $this->draftsUrl($page_id) . "/contents?edittime=" . $this->edit_time . "&overwrite=true";
+
+		// Deal with title when provided.
+		if (!empty($title)) {
+			$url .= "&title=" . urlencode($title);
+		}
+
+		// Get output from API.
+		$output = $this->post($url, $content);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
+	/**
+	 * Creates draft where no page exists
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @return string $output XML output of the API call.
+	 */
+	public function draftsCreate($page_id) {
+		// Build the MindTouch API URL to create or update a page's content.
+		$url = $this->draftsUrl($page_id) . "/create";
+
+		// Get output from API.
+		$output = $this->post($url, $content);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
+	/**
 	 * Returns information on the draft. When $page_id is empty, returns
 	 * a list of all pages with drafts.
 	 * 
@@ -343,6 +422,28 @@ class MindTouchApi {
 
 		$output = $this->get($url);
 		return $this->parseOutput($output);
+	}
+
+	/**
+	 * Checks to see if the page has a draft exist.
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @return boolean True when draft exists.
+	 */
+	public function draftsExists($page_id) {
+		// Build the MindTouch API URL to check a draft's existence.
+		$url = $this->draftsUrl($page_id);
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		if ((string) $output['state'] === 'active') {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
