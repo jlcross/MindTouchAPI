@@ -306,7 +306,6 @@ class MindTouchApi {
 			$url .= '/';
 			if (is_string($page_id)) {
 				$url .= '=';
-				$page_id = urlencode(urlencode($page_id));
 			}
 			$url .= $page_id;
 		}
@@ -439,7 +438,9 @@ class MindTouchApi {
 
 		// Parse the output.
 		$output = $this->parseOutput($output);
-		if ((string) $output['state'] === 'active') {
+		if ((string) $output['state'] === 'active' 
+			|| (string) $output['state'] === 'unpublished'
+		) {
 			return true;
 		} else {
 			return false;
