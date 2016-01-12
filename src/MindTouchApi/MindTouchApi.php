@@ -62,7 +62,7 @@ class MindTouchApi {
 	 * @param string $header Optional header that can be sent.
 	 * @return string $output XML response to the API call.
 	 */
-	private function post($url, $content = '', $type = '', $header = '') {
+	private function post($url, $content, $type = '', $header = '') {
 		$url = $this->api_url . $url;
 
 		// Set headers.
@@ -84,9 +84,7 @@ class MindTouchApi {
 		if (count($headers) > 0) {
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		}
-		if (!empty($content)) {
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
-		}
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
 		$output = curl_exec($ch);
 		curl_close($ch);
 		return $output;
@@ -325,7 +323,7 @@ class MindTouchApi {
 		$url = $this->draftsUrl($page_id) . "/activate";
 
 		// Get output from API.
-		$output = $this->post($url);
+		$output = $this->post($url, '');
 
 		// Parse the output.
 		$output = $this->parseOutput($output);
@@ -343,7 +341,7 @@ class MindTouchApi {
 		$url = $this->draftsUrl($page_id) . "/deactivate";
 
 		// Get output from API.
-		$output = $this->post($url);
+		$output = $this->post($url, '');
 
 		// Parse the output.
 		$output = $this->parseOutput($output);
