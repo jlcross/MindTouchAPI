@@ -801,6 +801,45 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Change's the given page's URI name without affecting
+	 * the page title.
+	 * 
+	 * @param mixed $page_id MindTouch page ID.
+	 * @param string $name New page URI name.
+	 * @return object $output XML API response object.
+	 */
+	public function pageRenameUri($page_id, $name) {
+		// Change the page's URI name to no longer match the title.
+		$url = $this->pageUrl($page_id) . "/move?name=" . $name;
+
+		// Get output from API.
+		$output = $this->post($url, '');
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
+	/**
+	 * Change's the given page's title and URI.
+	 * 
+	 * @param mixed $page_id MindTouch page ID.
+	 * @param string $name New page title.
+	 * @return object $output XML API response object.
+	 */
+	public function pageRename($page_id, $title) {
+		// Change the page's title. This will also update the URI.
+		$url = $this->pageUrl($page_id) . "/move?to=" . $title;
+
+		// Get output from API.
+		$output = $this->post($url, '');
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
+	/**
 	 * Order the two given pages.
 	 * @param int $page_id  MindTouch page ID.
 	 * @param int $after_id The page id after which this page should be
