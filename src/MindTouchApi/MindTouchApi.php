@@ -7,6 +7,7 @@ class MindTouchApi {
 	private $api_username;
 	private $api_password;
 	private $edit_time;
+	private $format = 'parsed';
 
 	public function __construct($config = array()) {
 		if (count($config) > 0) {
@@ -133,6 +134,18 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Sets the preferred format for the object to return. Parsed XML object or raw response.
+	 * 
+	 * @param string $format Values: raw or parsed.
+	 */
+	public function setFormat($format) {
+		if ($format !== 'raw') {
+			$format = 'parsed';
+		}
+		$this->format = $format;
+	}
+
+	/**
 	 * Returns a page ID encoded to MindTouch's specifications.
 	 * @param string $title Title of the page.
 	 * @param  string $path Path of the page.
@@ -203,7 +216,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -227,7 +243,10 @@ class MindTouchApi {
 		$output = $this->put($url, $content);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -267,7 +286,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -290,7 +312,10 @@ class MindTouchApi {
 		$output = $this->put($url, $content);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -326,7 +351,10 @@ class MindTouchApi {
 		$output = $this->post($url, '');
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -344,7 +372,10 @@ class MindTouchApi {
 		$output = $this->post($url, '');
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -362,7 +393,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -387,7 +421,10 @@ class MindTouchApi {
 		$output = $this->post($url, $content);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -405,7 +442,10 @@ class MindTouchApi {
 		$output = $this->post($url, $content);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -437,7 +477,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		if ((string) $output['state'] === 'active' 
 			|| (string) $output['state'] === 'unpublished'
 		) {
@@ -606,7 +649,10 @@ class MindTouchApi {
 		$output = $this->post($url, $content);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -643,7 +689,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -660,7 +709,10 @@ class MindTouchApi {
 		$output = $this->delete($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -677,7 +729,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		if ((string) $output['id'] > 0) {
 			return true;
 		} else {
@@ -693,7 +748,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -714,7 +772,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -778,7 +839,10 @@ class MindTouchApi {
 		fclose($fp);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -796,7 +860,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -816,7 +883,10 @@ class MindTouchApi {
 		$output = $this->post($url, '');
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -835,7 +905,10 @@ class MindTouchApi {
 		$output = $this->post($url, '');
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -857,7 +930,10 @@ class MindTouchApi {
 		$output = $this->put($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -880,7 +956,10 @@ class MindTouchApi {
 
 		// Parse the output.
 		if (empty($property)) {
+		if ($this->format === 'parsed') {
 			$output = $this->parseOutput($output);
+		}
+
 		}
 		return $output;
 	}
@@ -929,7 +1008,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -955,7 +1037,10 @@ class MindTouchApi {
 		$output = $this->put($url, $content);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -972,7 +1057,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -1007,7 +1095,10 @@ class MindTouchApi {
 		$output = $this->put($url, $content, 'application/xml; charset=utf-8');
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -1026,7 +1117,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -1042,7 +1136,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -1060,7 +1157,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -1116,7 +1216,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -1152,7 +1255,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -1191,7 +1297,10 @@ class MindTouchApi {
 		$output = $this->get($url);
 
 		// Parse the output.
-		$output = $this->parseOutput($output);
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
 		return $output;
 	}
 
@@ -1356,7 +1465,9 @@ class MindTouchApi {
 
 		// Parse the output.
 		if (empty($property)) {
-			$output = $this->parseOutput($output);
+			if ($this->format === 'parsed') {
+				$output = $this->parseOutput($output);
+			}
 		}
 		return $output;
 	}
