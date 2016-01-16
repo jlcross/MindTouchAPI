@@ -1147,7 +1147,6 @@ class MindTouchApi {
 
 		// Build query to get the site's feed.
 		$url = "site/feed?" . $query;
-		echo "url: $url\n\n";
 
 		// Get output from API.
 		$output = $this->get($url);
