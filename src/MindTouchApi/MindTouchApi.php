@@ -1011,6 +1011,13 @@ class MindTouchApi {
 		return $output;
 	}
 
+	/**
+	 * Builds a site map starting from a given page.
+	 * 
+	 * @param mixed $page_id MindTouch page ID.
+	 * @param array $options Options for the call.
+	 * @return object XML response object.
+	 */
 	public function pageTreeGet($page_id, $options = array()) {
 		// Build the MindTouch API URL to fetch a tree from the given page.
 		$url = $this->pageUrl($page_id) . "/tree?" . http_build_query($options);
@@ -1092,12 +1099,55 @@ class MindTouchApi {
 		$this->api_password = (!empty($credentials['api_password'])) ? $credentials['api_password'] : '';
 	}
 
+	/**
+	 * Retrieve report on site activities
+	 * 
+	 * @param string $since Start date for report.  Date is provided in 'yyyyMMddHHmmss' format (default: last 14 days).
+	 * @return object XML response object.
+	 */
 	public function siteActivityGet($since = '') {
 		// Build the MindTouch API URL to get the site activity.
 		$url = "site/activity";
 		if (!empty($since)) {
 			$url .= '?since=' . date('YmdHis', strtotime($since));
 		}
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+		return $output;
+	}
+
+	/**
+	 * Retrieve feed of site changes
+	 * 
+	 * @param array $options Options for the call.
+	 * @return object XML response object.
+	 */
+	public function siteFeedGet($options = array()) {
+		// Deal with options.
+		$query = '';
+		$allowed = array(
+			'filter',
+			'namespace',
+			'format',
+			'offset',
+			'limit',
+			'since',
+		);
+		foreach ($options as $option => $value) {
+			if (!in_array($option, $allowed)) {
+				// Remove any options that aren't allowed.
+				unset($options[$option]);
+			}
+		}
+		$query = http_build_query($options);
+
+		// Build query to get the site's feed.
+		$url = "site/feed?" . $query;
+		echo "url: $url\n\n";
 
 		// Get output from API.
 		$output = $this->get($url);
