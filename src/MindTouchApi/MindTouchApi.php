@@ -439,7 +439,7 @@ class MindTouchApi {
 		$url = $this->draftsUrl($page_id) . "/create";
 
 		// Get output from API.
-		$output = $this->post($url, $content);
+		$output = $this->post($url, '');
 
 		// Parse the output.
 		if ($this->format === 'parsed') {
