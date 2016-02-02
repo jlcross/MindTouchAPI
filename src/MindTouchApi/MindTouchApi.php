@@ -1349,7 +1349,7 @@ class MindTouchApi {
 		$imp_auth_token = urlencode($imp_auth_token);
 
 		// Build link and return it.
-		return $this->api_url . "users/authenticate?authtoken=" . $imp_auth_token . "&redirect=" . $redirect;
+		return $this->api_url . "users/authenticate?authtoken=" . $imp_auth_token . "&redirect=" . urlencode($redirect);
 	}
 
 	/**
