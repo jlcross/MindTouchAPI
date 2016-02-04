@@ -622,7 +622,7 @@ class MindTouchApi {
 	 */
 	private function pageUrl($page_id) {
 		$url = "pages/";
-		if (is_string($page_id)) {
+		if (is_string($page_id) && $page_id !== 'home') {
 			$url .= '=';
 		}
 		$url .= $page_id;
