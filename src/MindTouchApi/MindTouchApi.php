@@ -501,7 +501,7 @@ class MindTouchApi {
 		$url = $this->draftsUrl($page_id) . "/publish";
 
 		// Get output from API.
-		$output = $this->post($url);
+		$output = $this->post($url, '');
 
 		// Parse the output.
 		if ($this->format === 'parsed') {
@@ -522,7 +522,7 @@ class MindTouchApi {
 		$url = $this->draftsUrl($page_id) . "/unpublish";
 
 		// Get output from API.
-		$output = $this->post($url);
+		$output = $this->post($url, '');
 
 		// Parse the output.
 		if ($this->format === 'parsed') {
