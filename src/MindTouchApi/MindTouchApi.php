@@ -491,6 +491,48 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Publish a draft to the live page.
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @return string $output XML output of the API call.
+	 */
+	public function draftsPublish($page_id) {
+		// Build the MindTouch API URL to publish a draft.
+		$url = $this->draftsUrl($page_id) . "/publish";
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Unpublish the page, and create a draft of it.
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @return string $output XML output of the API call.
+	 */
+	public function draftsUnpublish($page_id) {
+		// Build the MindTouch API URL to unpublish a draft.
+		$url = $this->draftsUrl($page_id) . "/unpublish";
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
+		return $output;
+	}
+
+	/**
 	 * Escapes slashes in the MindTouch page ID.
 	 * @param string $page_id MindTouch page ID.
 	 * @return string $page_id MindTouch page ID.
