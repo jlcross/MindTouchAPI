@@ -1266,6 +1266,39 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Generates export information
+	 * 
+	 * @param mixed $page_id The MindTouch page ID.
+	 * @return string $output XML output of API response.
+	 */
+	public function siteExport($page_id = '') {
+		// Build the MindTouch API URL to get the site export.
+		$url = "site/export";
+
+		$content = "<export>";
+		if (!empty($page_id)) {
+			if (is_string($page_id)) {
+				$content .= '<page path="' . $page_id . '" recursive="true"/>';
+			} else {
+				$content .= '<page id="' . $page_id . '" recursive="true"/>';
+			}
+		} else {
+			$content .= '<page path="" recursive="true"/>';
+		}
+		$content .= "</export>";
+
+		// Get output from API.
+		$output = $this->post($url, $content, 'application/xml');
+
+		// Parse the output.
+		if ($this->format === 'parsed') {
+			$output = $this->parseOutput($output);
+		}
+
+		return $output;
+	}
+
+	/**
 	 * Retrieve feed of site changes
 	 * 
 	 * @param array $options Options for the call.
