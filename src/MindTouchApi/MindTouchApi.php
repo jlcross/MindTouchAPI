@@ -17,6 +17,24 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Lets user pass in preformatted API URL for a GET call.
+	 * 
+	 * @param string $url API URL.
+	 * @return string API response.
+	 */
+	public function apiCall($url) {
+		// Open curl.
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
+		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		$output = curl_exec($ch);
+		curl_close($ch);
+		return $output;
+	}
+
+	/**
 	 * Executes DELETE call to API.
 	 * @param string $url URL of the API to call.
 	 * @return string $output XML response to the API call.
