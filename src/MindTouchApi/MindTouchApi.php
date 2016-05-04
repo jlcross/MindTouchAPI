@@ -844,11 +844,12 @@ class MindTouchApi {
 	 * 
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @param string $file_name The path and name of the file to attach.
-	 * @param string $description Description of the file.
-	 * @param string $file_name_alt Name to use when uploading file to MindTouch.
+	 * @param string $[description] Description of the file.
+	 * @param string $[file_name_alt] Name to use when uploading file to MindTouch.
+	 * @param string $[mime_type] Mime type of the file.
 	 * @return object $output XML object containing API response.
 	 */
-	public function pageFilePut($page_id, $file_name, $description = '', $file_name_alt = '') {
+	public function pageFilePut($page_id, $file_name, $description = '', $file_name_alt = '', $mime_type = '') {
 		// Get information about the file.
 		$file_info = pathinfo($file_name);
 		$file_size = filesize($file_name);
@@ -870,14 +871,19 @@ class MindTouchApi {
 		$url = $this->api_url . $url;
 
 		// Get the mime type.
-		$file = escapeshellarg($file_info['dirname'] . '/' . $file_name);
-		$mime_type = shell_exec("file -bi " . $file);
-		$headers = array();
-		if (strpos($mime_type, 'ERROR') === false) {
-			if (strpos($mime_type, ';') !== false) {
-				$mime_type = substr($mime_type, 0, strpos($mime_type, ';'));
-			}
+		if (!empty($mime_type)) {
+			$headers = array();
 			$headers[] = 'Content-Type: ' . $mime_type;
+		} else {
+			$file = escapeshellarg($file_info['dirname'] . '/' . $file_name);
+			$mime_type = shell_exec("file -bi " . $file);
+			$headers = array();
+			if (strpos($mime_type, 'ERROR') === false) {
+				if (strpos($mime_type, ';') !== false) {
+					$mime_type = substr($mime_type, 0, strpos($mime_type, ';'));
+				}
+				$headers[] = 'Content-Type: ' . $mime_type;
+			}
 		}
 
 		// Open curl.
