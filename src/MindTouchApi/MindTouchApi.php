@@ -1183,7 +1183,6 @@ class MindTouchApi {
 	 * @param string $output XML output from API method.
 	 * @return object $output XML object.
 	 */
-		}
 	public function parseOutput($output) {
 		if ($this->format === 'parsed') {
 			$output = simplexml_load_string($output);
