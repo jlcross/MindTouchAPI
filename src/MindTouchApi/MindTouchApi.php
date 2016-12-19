@@ -527,6 +527,46 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Retrieves a draft's properties.
+	 * 
+	 * @param mixed $page_id MindTouch page ID.
+	 * @param string $property Optional. When set, retrieves that property.
+	 * @return mixed XML object when XML. String otherwise.
+	 */
+	public function draftPropertiesGet($page_id, $property = '') {
+		// Build the MindTouch API URL to get a page's properties.
+		$url = $this->draftsUrl($page_id) . "/properties";
+		if (!empty($property)) {
+			$url .= '/' . $property;
+		}
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		if (empty($property)) {
+			$output = $this->parseOutput($output);
+		}
+		return $output;
+	}
+
+	/**
+	 * Adds a property to a draft.
+	 * 
+	 * @param mixed $page_id MindTouch page ID.
+	 * @param string $property Name of property to add.
+	 * @param string $description Description of property.
+	 * @param string $content Content of property.
+	 * @return object XML object of draft's properties.
+	 */
+	public function draftPropertiesPost($page_id, $property, $description, $content) {
+		$url = $this->draftsUrl($page_id) . "/properties";
+		$header = "Slug: $property";
+		$output = $this->post($url . '?abort=never&description=' . $description, $content, 'text/plain', $header);
+		return $this->parseOutput($output);
+	}
+
+	/**
 	 * Escapes slashes in the MindTouch page ID.
 	 * @param string $page_id MindTouch page ID.
 	 * @return string $page_id MindTouch page ID.
@@ -976,8 +1016,7 @@ class MindTouchApi {
 
 		// Parse the output.
 		if (empty($property)) {
-		$output = $this->parseOutput($output);
-
+			$output = $this->parseOutput($output);
 		}
 		return $output;
 	}
