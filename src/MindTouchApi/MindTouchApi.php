@@ -87,7 +87,7 @@ class MindTouchApi {
 		// Set headers.
 		$headers = array();
 		if (!empty($type)) {
-			$headers[] = 'Content-Type: ' . $type;
+			$headers[] = 'Content-Type: ' . $type . '; charset=UTF-8';
 		}
 		if (!empty($header)) {
 			$headers[] = $header;
@@ -122,7 +122,7 @@ class MindTouchApi {
 		// Set headers.
 		$headers = array();
 		if (!empty($type)) {
-			$headers[] = 'Content-Type: ' . $type;
+			$headers[] = 'Content-Type: ' . $type . '; charset=UTF-8';
 		}
 		$headers[] = 'Content-Length: ' . strlen($content);
 		if (!empty($header)) {
