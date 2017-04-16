@@ -934,6 +934,28 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Change's the given page's title without affecting theURI.
+	 * 
+	 * @param mixed $page_id MindTouch page ID.
+	 * @param string $name Current page URI name.
+	 * @param string $title New page title.
+	 * @return object $output XML API response object.
+	 */
+	public function pageRenameTitle($page_id, $name, $title) {
+		// Change the page's title to no longer match the URI name.
+		$url = $this->pageUrl($page_id) . "/move?name=" . $name . "&title=" . $title;
+		echo "url: $url<br>\n";
+
+		// Get output from API.
+		$output = $this->post($url, '');
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+
+		return $output;		
+	}
+
+	/**
 	 * Change's the given page's URI name without affecting
 	 * the page title.
 	 * 
