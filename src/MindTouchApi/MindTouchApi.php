@@ -944,7 +944,6 @@ class MindTouchApi {
 	public function pageRenameTitle($page_id, $name, $title) {
 		// Change the page's title to no longer match the URI name.
 		$url = $this->pageUrl($page_id) . "/move?name=" . $name . "&title=" . $title;
-		echo "url: $url<br>\n";
 
 		// Get output from API.
 		$output = $this->post($url, '');
