@@ -1251,6 +1251,25 @@ class MindTouchApi {
 	}
 
 	/**
+	 * Retrieve search results.
+	 * 
+	 * @param string $search Item to search for.
+	 * @return object XML response object.
+	 */
+	public function search($search) {
+		// Build the MindTouch API URL to get the search results.
+		$url = "site/search?q=" . $search;
+
+		// Get output from API.
+		$output = $this->get($url);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+
+		return $output;
+	}
+
+	/**
 	 * Sets the credentials to use to access the API.
 	 * @param string $api_url URL to the MindTouch API.
 	 * @param string $api_username MindTouch API username.
