@@ -1254,11 +1254,12 @@ class MindTouchApi {
 	 * Retrieve search results.
 	 * 
 	 * @param string $search Item to search for.
+	 * @param array $options Options for the call.
 	 * @return object XML response object.
 	 */
-	public function search($search) {
+	public function search($search, $options = array()) {
 		// Build the MindTouch API URL to get the search results.
-		$url = "site/search?q=" . $search;
+		$url = "site/search?q=" . $search . "&" . http_build_query($options);
 
 		// Get output from API.
 		$output = $this->get($url);
