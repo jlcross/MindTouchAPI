@@ -29,6 +29,7 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$output = curl_exec($ch);
 		curl_close($ch);
 		return $output;
@@ -49,6 +50,7 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$output = curl_exec($ch);
 		curl_close($ch);
 		return $output;
@@ -68,6 +70,7 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$output = curl_exec($ch);
 		curl_close($ch);
 		return $output;
@@ -104,6 +107,7 @@ class MindTouchApi {
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		}
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$output = curl_exec($ch);
 		curl_close($ch);
 		return $output;
@@ -145,6 +149,7 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$output = curl_exec($ch);
 		curl_close($ch);
 		fclose($fp);
