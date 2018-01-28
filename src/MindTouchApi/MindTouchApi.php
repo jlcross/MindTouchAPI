@@ -178,8 +178,7 @@ class MindTouchApi {
 		// The MindTouch API requires page IDs to be URL encoded twice.
 		// Replace any slashes in the title first.
 		$title = $this->escapeSlashesPageId($title);
-		// Constrain the title to 150 characters.
-		$title = substr($title, 0, 150);
+
 		if (!empty($path)) {
 			$path = rtrim($path, '/');
 			$title = $path . '/' . $title;
