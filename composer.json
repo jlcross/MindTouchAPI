@@ -1,5 +1,5 @@
 {
-    "name": "MindTouchApi",
+    "name": "MindTouchApi/MindTouchApi",
     "autoload": {
         "psr-0" : {
             "MindTouchApi" : "src"
