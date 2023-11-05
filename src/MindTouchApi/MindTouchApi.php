@@ -178,7 +178,8 @@ class MindTouchApi {
 		// The MindTouch API requires page IDs to be URL encoded twice.
 		// Replace any slashes in the title first.
 		$title = $this->escapeSlashesPageId($title);
-
+		// Constrain the title to 150 characters.
+		$title = substr($title, 0, 150);
 		if (!empty($path)) {
 			$path = rtrim($path, '/');
 			$title = $path . '/' . $title;
@@ -233,6 +234,7 @@ class MindTouchApi {
 		if (!empty($context_id)) {
 			$url .= '/' . $language . '/' . $context_id;
 		}
+		$url .= '?verbose=true';
 
 		// Get output from API.
 		$output = $this->get($url);
@@ -261,6 +263,24 @@ class MindTouchApi {
 
 		// Get output from API.
 		$output = $this->put($url, $content);
+
+		// Parse the output.
+		$output = $this->parseOutput($output);
+
+		return $output;
+	}
+
+	/**
+	 * Returns all context ID mappings for the page.
+	 * @param integer $page_id MindTouch page ID. Must be integer.
+	 * @return string $output XML output of API response.
+	 */
+	public function contextMapsPageGet($context_id, $page_id) {
+		// Build the MindTouch API URL to get the context IDs for the page.
+		$url = "contextmaps/query?pageID=$page_id&verbose=true";
+
+		// Get output from API.
+		$output = $this->get($url);
 
 		// Parse the output.
 		$output = $this->parseOutput($output);
