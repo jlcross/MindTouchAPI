@@ -6,6 +6,8 @@ class MindTouchApi {
 	private $api_url;
 	private $api_username;
 	private $api_password;
+	private $api_key;
+	private $api_secret;
 	private $edit_time;
 	private $format = 'parsed';
 
@@ -23,16 +25,36 @@ class MindTouchApi {
 	 * @return string API response.
 	 */
 	public function apiCall($url) {
+		$token = $this->apiToken();
+
 		// Open curl.
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		if (!empty($token)) {
+			$headers = array(
+				'X-Deki-Token' => $token,
+			);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		} else {
+			curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		}
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$output = curl_exec($ch);
 		curl_close($ch);
 		return $output;
+	}
+
+	public function apiToken() {
+		if (!empty($this->api_username) && !empty($this->api_key) && !empty($this->api_secret)) {
+			$time = time();
+			$hash = hash_hmac('sha256', ("{$this->api_key}_{$time}_={$this->api_username}"), $this->api_secret, false);
+			$token = "tkn_{$key}_{$time}_={$user}_{$hash}";
+			return $token;
+		} else {
+			return '';
+		}
 	}
 
 	/**
@@ -41,6 +63,7 @@ class MindTouchApi {
 	 * @return string $output XML response to the API call.
 	 */
 	private function delete($url) {
+		$token = $this->apiToken();
 		$url = $this->api_url . $url;
 
 		// Open curl.
@@ -48,8 +71,15 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		if (!empty($token)) {
+			$headers = array(
+				'X-Deki-Token' => $token,
+			);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		} else {
+			curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		}
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$output = curl_exec($ch);
 		curl_close($ch);
@@ -62,14 +92,22 @@ class MindTouchApi {
 	 * @return string $output XML response to the API call.
 	 */
 	private function get($url) {
+		$token = $this->apiToken();
 		$url = $this->api_url . $url;
 
 		// Open curl.
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		if (!empty($token)) {
+			$headers = array(
+				'X-Deki-Token' => $token,
+			);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		} else {
+			curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		}
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$output = curl_exec($ch);
 		curl_close($ch);
@@ -85,6 +123,7 @@ class MindTouchApi {
 	 * @return string $output XML response to the API call.
 	 */
 	private function post($url, $content, $type = '', $header = '') {
+		$token = $this->apiToken();
 		$url = $this->api_url . $url;
 
 		// Set headers.
@@ -95,14 +134,19 @@ class MindTouchApi {
 		if (!empty($header)) {
 			$headers[] = $header;
 		}
+		if (!empty($token)) {
+			$headers[] = 'X-Deki-Token' => $token;
+		}
 
 		// Open curl.
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		if (empty($token)) {
+			curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		}
 		if (count($headers) > 0) {
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		}
@@ -121,6 +165,7 @@ class MindTouchApi {
 	 * @return string $output XML response to the API call.
 	 */
 	private function put($url, $content = '', $type = 'application/xml', $header = '') {
+		$token = $this->apiToken();
 		$url = $this->api_url . $url;
 
 		// Set headers.
@@ -131,6 +176,9 @@ class MindTouchApi {
 		$headers[] = 'Content-Length: ' . strlen($content);
 		if (!empty($header)) {
 			$headers[] = $header;
+		}
+		if (!empty($token)) {
+			$headers[] = 'X-Deki-Token' => $token;
 		}
 
 		// PUT in PHP requires content to be in a file. Store in temp.
@@ -147,8 +195,10 @@ class MindTouchApi {
 		}
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		if (empty($token)) {
+			curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		}
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$output = curl_exec($ch);
 		curl_close($ch);
@@ -878,6 +928,8 @@ class MindTouchApi {
 	 * @return object $output XML object containing API response.
 	 */
 	public function pageFilePut($page_id, $file_name, $description = '', $file_name_alt = '', $mime_type = '') {
+		$token = $this->apiToken();
+
 		// Get information about the file.
 		$file_info = pathinfo($file_name);
 		$file_size = filesize($file_name);
@@ -899,19 +951,23 @@ class MindTouchApi {
 		$url = $this->api_url . $url;
 
 		// Get the mime type.
-		if (!empty($mime_type)) {
-			$headers = array();
-			$headers[] = 'Content-Type: ' . $mime_type;
-		} else {
+		if (empty($mime_type)) {
 			$file = escapeshellarg($file_info['dirname'] . '/' . $file_name);
 			$mime_type = shell_exec("file -bi " . $file);
-			$headers = array();
 			if (strpos($mime_type, 'ERROR') === false) {
 				if (strpos($mime_type, ';') !== false) {
 					$mime_type = substr($mime_type, 0, strpos($mime_type, ';'));
 				}
-				$headers[] = 'Content-Type: ' . $mime_type;
 			}
+		}
+
+		// Sett headers.
+		$headers = array();
+		if (!empty($mime_type)) {
+			$headers[] = 'Content-Type: ' . $mime_type;
+		}
+		if (!empty($token)) {
+			$headers[] = 'X-Deki-Token' => $token;
 		}
 
 		// Open curl.
@@ -926,8 +982,10 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_PUT, true);
 		curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		if (empty($token)) {
+			curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		}
 		$output = curl_exec($ch);
 		curl_close($ch);
 		fclose($fp);
@@ -1307,6 +1365,9 @@ class MindTouchApi {
 
 		$this->api_username = (!empty($credentials['api_username'])) ? $credentials['api_username'] : '';
 		$this->api_password = (!empty($credentials['api_password'])) ? $credentials['api_password'] : '';
+
+		$this->api_key = (!empty($credentials['api_key'])) ? $credentials['api_key'] : '';
+		$this->api_secret = (!empty($credentials['api_secret'])) ? $credentials['api_secret'] : '';
 	}
 
 	/**
