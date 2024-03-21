@@ -33,7 +33,7 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		if (!empty($token)) {
 			$headers = array(
-				'X-Deki-Token' => $token,
+				'X-Deki-Token: ' . $token,
 			);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		} else {
@@ -50,7 +50,7 @@ class MindTouchApi {
 		if (!empty($this->api_username) && !empty($this->api_key) && !empty($this->api_secret)) {
 			$time = time();
 			$hash = hash_hmac('sha256', ("{$this->api_key}_{$time}_={$this->api_username}"), $this->api_secret, false);
-			$token = "tkn_{$key}_{$time}_={$user}_{$hash}";
+			$token = "tkn_{$this->api_key}_{$time}_={$this->api_username}_{$hash}";
 			return $token;
 		} else {
 			return '';
@@ -73,7 +73,7 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		if (!empty($token)) {
 			$headers = array(
-				'X-Deki-Token' => $token,
+				'X-Deki-Token: ' . $token,
 			);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		} else {
@@ -101,7 +101,7 @@ class MindTouchApi {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		if (!empty($token)) {
 			$headers = array(
-				'X-Deki-Token' => $token,
+				'X-Deki-Token: ' . $token,
 			);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		} else {
@@ -135,7 +135,7 @@ class MindTouchApi {
 			$headers[] = $header;
 		}
 		if (!empty($token)) {
-			$headers[] = 'X-Deki-Token' => $token;
+			$headers[] = 'X-Deki-Token: ' . $token;
 		}
 
 		// Open curl.
@@ -178,7 +178,7 @@ class MindTouchApi {
 			$headers[] = $header;
 		}
 		if (!empty($token)) {
-			$headers[] = 'X-Deki-Token' => $token;
+			$headers[] = 'X-Deki-Token: ' . $token;
 		}
 
 		// PUT in PHP requires content to be in a file. Store in temp.
@@ -208,7 +208,7 @@ class MindTouchApi {
 
 	/**
 	 * Sets the preferred format for the object to return. Parsed XML object or raw response.
-	 * 
+	 *
 	 * @param string $format Values: raw or parsed.
 	 */
 	public function setFormat($format) {
@@ -340,7 +340,7 @@ class MindTouchApi {
 
 	/**
 	 * Deletes the given context ID.
-	 * 
+	 *
 	 * @param string $context_id MindTouch context ID.
 	 * @return string $output XML output of API response.
 	 */
@@ -405,7 +405,7 @@ class MindTouchApi {
 
 	/**
 	 * Builds the drafts API URL. Supports both string and integer page IDs.
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @return string $url URL for the drafts API methods.
 	 */
@@ -423,7 +423,7 @@ class MindTouchApi {
 
 	/**
 	 * Activates draft on existing page, copies content, attachments
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @return string $output XML output of the API call.
 	 */
@@ -442,7 +442,7 @@ class MindTouchApi {
 
 	/**
 	 * Deactivates draft on existing page
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @return string $output XML output of the API call.
 	 */
@@ -461,7 +461,7 @@ class MindTouchApi {
 
 	/**
 	 * Retrieves a draft page's contents.
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @return object $output XML object.
 	 */
@@ -480,7 +480,7 @@ class MindTouchApi {
 
 	/**
 	 * Update draft contents of a page.
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @param string $content Content of the draft.
 	 * @param string $title Title of draft to use when different from page ID.
@@ -506,7 +506,7 @@ class MindTouchApi {
 
 	/**
 	 * Creates draft where no page exists
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @return string $output XML output of the API call.
 	 */
@@ -526,7 +526,7 @@ class MindTouchApi {
 	/**
 	 * Returns information on the draft. When $page_id is empty, returns
 	 * a list of all pages with drafts.
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @return object XML object draft information.
 	 */
@@ -539,7 +539,7 @@ class MindTouchApi {
 
 	/**
 	 * Checks to see if the page has a draft exist.
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @return boolean True when draft exists.
 	 */
@@ -553,7 +553,7 @@ class MindTouchApi {
 		// Parse the output.
 		$output = $this->parseOutput($output);
 
-		if ((string) $output['state'] === 'active' 
+		if ((string) $output['state'] === 'active'
 			|| (string) $output['state'] === 'unpublished'
 		) {
 			return true;
@@ -564,7 +564,7 @@ class MindTouchApi {
 
 	/**
 	 * Publish a draft to the live page.
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @return string $output XML output of the API call.
 	 */
@@ -583,7 +583,7 @@ class MindTouchApi {
 
 	/**
 	 * Unpublish the page, and create a draft of it.
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @return string $output XML output of the API call.
 	 */
@@ -602,7 +602,7 @@ class MindTouchApi {
 
 	/**
 	 * Retrieves a draft's properties.
-	 * 
+	 *
 	 * @param mixed $page_id MindTouch page ID.
 	 * @param string $property Optional. When set, retrieves that property.
 	 * @return mixed XML object when XML. String otherwise.
@@ -626,7 +626,7 @@ class MindTouchApi {
 
 	/**
 	 * Adds a property to a draft.
-	 * 
+	 *
 	 * @param mixed $page_id MindTouch page ID.
 	 * @param string $property Name of property to add.
 	 * @param string $description Description of property.
@@ -653,7 +653,7 @@ class MindTouchApi {
 	/**
 	 * Returns list of groups. When group ID is supplied, only that group's
 	 * information is returned.
-	 * 
+	 *
 	 * @param mixed $group_id Can be group ID or group name.
 	 * @return object XML object containing user information.
 	 */
@@ -673,7 +673,7 @@ class MindTouchApi {
 
 	/**
 	 * Creates or updates a new group.
-	 * 
+	 *
 	 * @param string $name Group name.
 	 * @param integer $group_id MindTouch group ID.
 	 * @return object XML object containing group information.
@@ -695,7 +695,7 @@ class MindTouchApi {
 
 	/**
 	 * Returns list of users in the group.
-	 * 
+	 *
 	 * @param mixed $group_id Can be group ID or group name.
 	 * @return object XML object containing user information.
 	 */
@@ -715,7 +715,7 @@ class MindTouchApi {
 
 	/**
 	 * Adds users to a group.
-	 * 
+	 *
 	 * @param mixed $group_id Can be group ID or group name.
 	 * @param array $users Array of user MindTouch IDs (integers) to add.
 	 * @return object XML object containing group information.
@@ -743,7 +743,7 @@ class MindTouchApi {
 
 	/**
 	 * Removes user from a group.
-	 * 
+	 *
 	 * @param mixed $group_id Can be group ID or group name.
 	 * @param mixed $user_id Can be user ID or user name.
 	 * @return object XML object.
@@ -766,7 +766,7 @@ class MindTouchApi {
 
 	/**
 	 * Builds the pages API URL. Supports both string and integer page IDs.
-	 * 
+	 *
 	 * @param mixed $page_id String or integer.
 	 * @return string $url URL for the pages API methods.
 	 */
@@ -919,7 +919,7 @@ class MindTouchApi {
 
 	/**
 	 * Attaches a file to the given MindTouch page.
-	 * 
+	 *
 	 * @param mixed $page_id The MindTouch page ID.
 	 * @param string $file_name The path and name of the file to attach.
 	 * @param string $[description] Description of the file.
@@ -967,7 +967,7 @@ class MindTouchApi {
 			$headers[] = 'Content-Type: ' . $mime_type;
 		}
 		if (!empty($token)) {
-			$headers[] = 'X-Deki-Token' => $token;
+			$headers[] = 'X-Deki-Token: ' . $token;
 		}
 
 		// Open curl.
